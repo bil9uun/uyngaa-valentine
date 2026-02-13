@@ -1,64 +1,137 @@
-import Image from "next/image";
+"use client";
+
+import { ReactNode, useEffect, useState } from "react";
+import BackSide from "./components/BackSide";
+import FRontSide from "./components/FRontSide";
+import {
+  IconDeviceHeartMonitorFilled,
+  IconHeart,
+  IconHeartBitcoin,
+  IconHeartBolt,
+  IconHeartCheck,
+  IconHeartCode,
+  IconHeartCog,
+  IconHeartDiscount,
+  IconHeartDollar,
+  IconHeartDown,
+  IconHeartExclamation,
+  IconHeartFilled,
+} from "@tabler/icons-react";
+
+type FloatingHeart = {
+  id: number;
+  left: number;
+  top: number;
+  size: number;
+  icon: ReactNode;
+  duration: number;
+};
 
 export default function Home() {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [noOffset, setNoOffset] = useState({ x: 0, y: 0 });
+  const [hearts, setHearts] = useState<FloatingHeart[]>([]);
+  const [showHearts, setShowHearts] = useState(false);
+  const [yesScale, setYesScale] = useState(1);
+
+  useEffect(() => {
+    if (!isFlipped) return;
+
+    const icons = [
+      <IconHeart key="heart" />,
+      <IconHeartBitcoin key="bitcoin" />,
+      <IconHeartBolt key="bolt" />,
+      <IconHeartCheck key="check" />,
+      <IconHeartCode key="code" />,
+      <IconHeartDollar key="dollar" />,
+      <IconHeartDown key="down" />,
+      <IconHeartFilled key="heartFIlled" />,
+      <IconHeartCog key="heartFIlled" />,
+      <IconHeartDiscount key="heartFIlled" />,
+      <IconHeartFilled key="filledheart" />,
+      <IconHeartFilled key="filledheart1" />,
+      <IconHeartFilled key="filledheart2" />,
+      <IconHeartExclamation key="heartFIlled" />,
+      <IconDeviceHeartMonitorFilled key="heartFIlled" />,
+    ];
+
+    const created: FloatingHeart[] = Array.from({ length: 100 }).map(
+      (_, index) => ({
+        id: index,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        size: 8 + Math.random() * 40, // 🔹 хэт томоос сэргийлэв
+        icon: icons[Math.floor(Math.random() * icons.length)],
+        duration: 2 + Math.random() * 2,
+      }),
+    );
+
+    Promise.resolve().then(() => {
+      setHearts(created);
+      setShowHearts(true);
+    });
+  }, [isFlipped]);
+
+  const handleYesClick = () => {
+    if (isFlipped) return;
+    setIsFlipped(true);
+  };
+
+  const moveNoButton = () => {
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 50 + Math.random() * 70;
+
+    setYesScale((p) => Math.min(p + 0.015, 1.6));
+
+    setNoOffset({
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
+    });
+  };
+  const handleNoHover = () => {
+    if (isFlipped) return;
+    moveNoButton();
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="relative flex min-h-screen items-center justify-center bg-linear-to-b from-pink-200 via-pink-100 to-pink-200 px-4 py-10 font-sans">
+      {showHearts && hearts.length > 0 && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+          {hearts.map((heart) => (
+            <span
+              key={heart.id}
+              // className={`absolute animate-bounce text-pink-400/90`}
+              className="absolute animate-ping text-pink-400/90"
+              style={{
+                left: `${heart.left}%`,
+                top: `${heart.top}%`,
+                fontSize: `${heart.size}px`,
+                animationDuration: `${heart.duration ?? 3}s`,
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {heart.icon}
+            </span>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      )}
+      <main className="w-full h-full">
+        <section className="mx-auto max-w-4xl perspective-[2000px]">
+          <div
+            className="min-h-min w-full transition-transform duration-500 ease-in-out transform-3d"
+            style={{
+              transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <FRontSide
+              handleNoHover={handleNoHover}
+              handleYesClick={handleYesClick}
+              moveNoButton={moveNoButton}
+              noOffset={noOffset}
+              yesScale={yesScale}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+            <BackSide />
+          </div>
+        </section>
       </main>
     </div>
   );
