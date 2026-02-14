@@ -20,7 +20,7 @@ const BackSide = () => {
             <Image width={350} height={200} src="/beb.jpeg" alt="beb" />
           </div>
           <p className="mt-4 max-w-md text-sm text-pink-500 sm:text-base">
-            You just made Ariunbold very happy!
+            You just made Anbo very happy!
           </p>
           <p className="mt-2 max-w-md text-sm text-pink-400 sm:text-base">
             Happy Valentine&apos;s Day .❤️

@@ -25,7 +25,7 @@ const FRontSide = ({
         </div>
       </div>
       <div className="flex self-center justify-between gap-4 text-xs font-medium uppercase tracking-[0.25em] text-pink-400">
-        <span>From Ariunbold</span>
+        <span>From Anbo</span>
       </div>
       <Image
         className="-mb-10"
